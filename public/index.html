@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Test</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const socket = io(`http://localhost:3030`);
+
+            socket.on('connect', () => {
+                console.log('Conectado al servidor');
+                socket.emit('message', '¡Hola desde el cliente!');
+            });
+
+            socket.on('message', (data) => {
+                console.log('Mensaje del servidor:', data);
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Prueba de Socket.IO</h1>
+</body>
+</html>

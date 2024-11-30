@@ -1,20 +1,27 @@
 const express = require('express')
 const dotenv = require('dotenv')
-//const bodyparser = require("body-parser");
+const http = require('http')
+const path = require('path')
 
+const socketIo = require('./socket/socket')
 const connectDB = require('./database/connection')
 
 const app = express()
 app.use(express.json());
-//app.use(bodyparser.urlencoded({ extended : true}))
 dotenv.config()
 connectDB()
 
 const PORT = process.env.PORT || 8080
 
 app.use('/', require('./routes/router'))
-app.get('/', (req, res) => { res.send('¡Hola Mundo!'); });
+//app.get('/', (req, res) => { res.send('¡Hola Mundo!'); });
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/index.html'));
+})
 
-app.listen(PORT, () => {
+const server = http.createServer(app)
+const io = socketIo(server)
+
+server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)
 })

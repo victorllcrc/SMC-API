@@ -133,3 +133,5 @@ config.env
 
 # SonarQube Scanner
 .scannerwork
+
+.vscode
