@@ -19,7 +19,7 @@ exports.getAllUsers = async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: 'Error al obtener los usuarios' });
     }
-  };
+}
 
 exports.updateUser = async (req, res) => {
   try {

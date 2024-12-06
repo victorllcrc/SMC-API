@@ -14,6 +14,14 @@ exports.singIn = async (req, res) => {
       const token = jwt.sign({id: userFound._id, name: `${userFound.nombre} ${userFound.apellidos}`, email:userFound.email},process.env.SECRET_KEY,{
         expiresIn:86400 //24horas
       })
+
+      // Configurar cookies 
+      res.cookie('authToken', token, {
+        httpOnly: true,    
+        sameSite: 'Strict',
+        maxAge: 86400000   // 24 horas 
+      })
+      
       res.status(200).json({token})
       
     } catch (error) {

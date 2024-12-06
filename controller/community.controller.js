@@ -30,7 +30,7 @@ exports.createCommunity = async (req, res)=>{
         const community = await newCommunity.save()
         res.status(201).json(community)
     } catch (error) {
-        res.status(500).json({message: 'Error al intentar crear comunidad'})
+        res.status(500).json({message: 'Error al intentar crear comunidad', error})
     }
 }
 
@@ -60,6 +60,16 @@ exports.searchCommunity = async (req, res) => {
     } catch (error) {
         res.status(500).json({message: 'Error al intentar realizar busqueda', error})
     }
-    
-
 }
+
+// const getCommunitiesbyUserId = async (req, res) => {
+//     try {
+//         // Recuperado de los cookies (usando middleware verifyToken)
+//         const user_id = req.user_id
+
+//         const communities = await Community.find()
+
+//     } catch (error) {
+//         res.status(500).json({message: 'Error al recuperar comunidades de usuario', error})
+//     }
+// }

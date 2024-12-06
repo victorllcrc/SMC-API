@@ -10,7 +10,7 @@ const communitySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    mienbros:{
+    miembros:{
         type: Number,
         required: true
     },
