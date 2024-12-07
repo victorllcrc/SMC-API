@@ -10,10 +10,12 @@ const communitySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    miembros:{
-        type: Number,
-        required: true
-    },
+    miembros: [
+        {
+            usuarioId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+            rol: {type: String, required: true}
+        }
+    ],
     image_url:{
         type: String,
         required: true

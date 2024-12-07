@@ -21,7 +21,7 @@ exports.singIn = async (req, res) => {
         sameSite: 'Strict',
         maxAge: 86400000   // 24 horas 
       })
-      
+
       res.status(200).json({token})
       
     } catch (error) {

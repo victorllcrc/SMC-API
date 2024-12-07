@@ -18,9 +18,9 @@ route.post('/api/v1/singup/exist_correo', authController.existCorreo)
 //COMMUNITY
 route.get('/api/v1/communities', communityController.getAllCommunities)
 route.get('/api/v1/community/:id', communityController.getCommunityById)
-route.post('/api/v1/community', communityController.createCommunity)
+route.post('/api/v1/community', verifyToken, communityController.createCommunity)
 route.get('/api/v1/communities/search', verifyToken, communityController.searchCommunity)
 
-// route.get('/api/v1/community/myCommunities', verifyToken, communityController.getCommunitiesbyUserId)
+route.get('/api/v1/communities/myCommunities', verifyToken, communityController.getCommunitiesbyUserId)
 
 module.exports = route

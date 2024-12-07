@@ -50,8 +50,7 @@ const userSchema = new mongoose.Schema({
     rol: {
         type: String,
         required: true
-    },
-
+    }
 })
 
 userSchema.statics.encryptPassword = async (password) => {
