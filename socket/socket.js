@@ -1,7 +1,7 @@
-const socketIo = require('socket.io');
+const socketIo = require('socket.io')
 
 module.exports = (server) => {
-    const io = socketIo(server);
+    const io = socketIo(server)
 
     io.on('connection', (socket) => {
         console.log('Un cliente se ha conectado:', socket.id)
@@ -12,5 +12,6 @@ module.exports = (server) => {
         })
     })
 
-    return io;
+    return io
 }
+

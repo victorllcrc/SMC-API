@@ -2,8 +2,10 @@ const express = require('express')
 const dotenv = require('dotenv')
 const http = require('http')
 const path = require('path')
+const { Server } = require('socket.io')
 
-const socketIo = require('./socket/socket')
+// const socketIo = require('./socket/socket')
+const socketIo = require('./socket/text_chat')
 const connectDB = require('./database/connection')
 
 const app = express()
@@ -20,7 +22,9 @@ app.get('/', (req, res) => {
 })
 
 const server = http.createServer(app)
-const io = socketIo(server)
+const io = new Server(server)
+
+socketIo(io)
 
 server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`)

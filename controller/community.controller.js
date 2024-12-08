@@ -34,11 +34,12 @@ exports.getCommunityById = async (req, res) => {
 //     }
 // }
 
-// Cuando alguien crea una comunidad, automáticamente se le da el rol de ADMINISTRADOR
+// Cuando alguien crea una comunidad, automáticamente se le da el rol de ADMINISTRADOR y se crea un canal de texto y voz GENERAL
 exports.createCommunity = async (req, res)=>{
         try {
             const user_id = req.user_id
-            req.body.miembros = [{usuarioId: user_id, rol: "Administrador"}]            
+            req.body.miembros = [{usuarioId: user_id, rol: "Administrador"}]
+            req.body.canales = [{nombre: 'General', type: 'texto'}, {nombre: 'General', type: 'voz'}]           
             const newCommunity = new Community(req.body)
             const community = await newCommunity.save()
             res.status(201).json(community)
