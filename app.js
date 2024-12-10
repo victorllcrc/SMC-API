@@ -2,11 +2,13 @@ const express = require('express')
 const dotenv = require('dotenv')
 const http = require('http')
 const path = require('path')
+const cors = require('cors')
 
 const socketIo = require('./socket/socket')
 const connectDB = require('./database/connection')
 
 const app = express()
+app.use(cors())
 app.use(express.json());
 dotenv.config()
 connectDB()
