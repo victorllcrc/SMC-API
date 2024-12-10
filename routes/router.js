@@ -4,6 +4,8 @@ const verifyToken = require('../middleware/verifyToken')
 const userController = require('../controller/user.controller')
 const authController = require('../controller/auth.controller')
 const communityController = require('../controller/community.controller')
+const channelController = require('../controller/channel.controller')
+const messageController = require('../controller/message.controller')
 
 // USERS
 route.post('/api/v1/users', userController.createUser)
@@ -22,5 +24,13 @@ route.post('/api/v1/community', verifyToken, communityController.createCommunity
 route.get('/api/v1/communities/search', verifyToken, communityController.searchCommunity)
 
 route.get('/api/v1/communities/myCommunities', verifyToken, communityController.getCommunitiesbyUserId)
+
+//CHANNELS
+route.get('/api/v1/channels/:comunidad_id', verifyToken, channelController.getAllChannels)
+route.post('/api/v1/channel/:comunidad_id', verifyToken, channelController.createChannel)
+
+//MENSAJES
+route.get('/api/v1/messages/:comunidad_id/:canal_id', verifyToken, messageController.searchMessage)
+route.post('/api/v1/message/:comunidad_id/:canal_id', verifyToken, messageController.createMessage)
 
 module.exports = route
