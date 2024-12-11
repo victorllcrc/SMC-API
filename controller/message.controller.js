@@ -38,3 +38,24 @@ exports.searchMessage = async (req, res) => {
         res.status(500).json({message: 'Error al buscar mensajes', error})
     }
 }
+
+exports.searchMessageV2 = async (req, res) => {
+    try {
+        const {comunidad_id, canal_id} = req.params
+
+        const filter = {}
+
+        filter.communityId = comunidad_id
+        filter.roomId = canal_id
+
+        const messages = await Message.find(filter)
+
+        if(!messages){
+            res.status(404).json({ message: 'No se encontraron mensajes con ese texto'})
+        }
+
+        res.status(200).json(messages)
+    } catch (error) {
+        res.status(500).json({message: 'Error al buscar mensajes', error})
+    }
+}

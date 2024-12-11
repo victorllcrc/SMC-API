@@ -31,6 +31,7 @@ route.post('/api/v1/channel/:comunidad_id', verifyToken, channelController.creat
 
 //MENSAJES
 route.get('/api/v1/messages/:comunidad_id/:canal_id', verifyToken, messageController.searchMessage)
+route.get('/api/v2/messages/:comunidad_id/:canal_id', messageController.searchMessageV2)
 route.post('/api/v1/message/:comunidad_id/:canal_id', verifyToken, messageController.createMessage)
 
 module.exports = route
