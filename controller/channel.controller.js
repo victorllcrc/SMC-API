@@ -18,11 +18,11 @@ exports.getAllChannels = async (req, res) => {
 exports.createChannel = async (req, res) => {
     try {
         const {comunidad_id} = req.params
-        const {nombre, type} = req.body
+        const {nombre, is_texto} = req.body
 
         const newChannel = { 
             nombre: nombre,
-            type: type,
+            is_texto: is_texto,
             comunidadId: comunidad_id
         }
 

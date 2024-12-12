@@ -9,7 +9,7 @@ const options = {
             version: '1.0.0',
             servers: [
                 {
-                    url: 'http://localhost:3030',
+                    url: 'https://smc-app-grengnejapg5ekdp.eastus-01.azurewebsites.net',
                     description: 'Local server'
                 }
             ]

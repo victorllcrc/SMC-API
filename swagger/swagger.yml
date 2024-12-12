@@ -13,6 +13,8 @@ tags:
     description: Endpoints relacionados al manejo de canales dentro de la comunidad
   - name: Messages
     description: Endpoints relacionados al manejo de mensajes de texto dentro de los canales de comunidad
+  - name: Authentication
+    description: Endpoints relacionados a la validación de datos y generación de tokens
 
 paths:
   /users:
@@ -25,37 +27,19 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                nombre:
-                  type: string
-                apellidos:
-                  type: string
-                email:
-                  type: string
-                password:
-                  type: string
-                direccion:
-                  type: string
-                institucion_educativa:
-                  type: string
-                carrera:
-                  type: string
-                telefono:
-                  type: string
-                genero:
-                  type: string
-                fecha_nacimiento:
-                  type: string
-                  format: date
+              $ref: '#/components/schemas/user'
       responses:
         '201':
           description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userResp'
         '500':
-          description: Error
+          description: Error al crear el usuario
     get:
+      tags:
+        - Users
       summary: Obtener todos los usuarios
       responses:
         '200':
@@ -63,14 +47,17 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
+                $ref: '#/components/schemas/listUserResp'
+        '500':
+          description: Error al obtener lista de usuarios
   /user/{id}:
     get:
+      tags:
+        - Users
       summary: Obtener usuario por ID
       parameters:
         - name: id
+          description: ID del usuario buscado
           in: path
           required: true
           schema:
@@ -81,8 +68,14 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/userResp'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error al obtener el usuario
     put:
+      tags:
+        - Users
       summary: Actualizar usuario
       parameters:
         - name: id
@@ -120,13 +113,21 @@ paths:
                 fecha_nacimiento:
                   type: string
                   format: date
-                rol:
-                  type: string
       responses:
         '200':
-          description: Usuario actualizado exitosamente.
+          description: Usuario actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userResp'
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error al actualizar el usuario
   /singin:
     post:
+      tags:
+        - Authentication
       summary: Iniciar sesión
       requestBody:
         required: true
@@ -137,13 +138,25 @@ paths:
               properties:
                 email:
                   type: string
+                  example: victor.llancari@unmsm.edu.pe
                 password:
                   type: string
+                  example: 12345
       responses:
         '200':
-          description: Inicio de sesión exitoso.
+          description: Inicio de sesión exitoso (genera un token que se enviará por cookies)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3M2UyNTY3MjIwMmI3MGE1Y2M5NzI4MCIsIm5hbWUiOiJWaWN0b3IgTExhbmNhcmkgQ2FycmFzY28iLCJ1c2VybmFtZSI6InZpY3RvcmxsY3JjIiwiZW1haWwiOiJ2aWN0b3IubGxhbmNhcmlAdW5tc20uZWR1LnBlIiwiaWF0IjoxNzMzOTg2MzAzLCJleHAiOjE3MzQwNzI3MDN9.dnWjKe-TUTy6Fp4uQtlxSAAzmPsVC-v3MQQsGgDO7tw
   /communities:
     get:
+      tags:
+        - Communities
       summary: Obtener todas las comunidades
       responses:
         '200':
@@ -151,14 +164,69 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
+                $ref: '#/components/schemas/listCommunityResp'
+  /communities/myCommunities:
+    get:
+      tags:
+        - Communities
+      summary: Obtener todas las comunidades del usuario
+      responses:
+        '200':
+          description: Lista de comunidades
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listCommunityResp'
   /community:
     post:
+      tags:
+        - Communities
       summary: Crear comunidad
       requestBody:
         required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/community'
+      responses:
+        '201':
+          description: Comunidad creada exitosamente
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/communityResp'
+        '500':
+          description: Error al crear comunidad
+  /community/{id}:
+    get:
+      tags:
+        - Communities
+      summary: Obtener comunidad por ID
+      parameters:
+        - name: id
+          description: ID de la comunidad buscada
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Datos de la comunidad
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/communityResp'
+        '404':
+          description: Comunidad no encontrada
+        '500':
+          description: Error al obtener comunidad
+  /communities/search:
+    post:
+      tags:
+        - Communities
+      summary: Buscar comunidad por nombre y/o estado de privacidad
+      requestBody:
+        required: false
         content:
           application/json:
             schema:
@@ -166,18 +234,254 @@ paths:
               properties:
                 nombre:
                   type: string
-                descripcion:
-                  type: string
-                image_url:
-                  type: string
-                is_personal:
-                  type: boolean
+                  example: Comunidad 001
                 is_public:
                   type: boolean
-                curso:
-                  type: string
-                facultad:
-                  type: string
+                  example: true
       responses:
-        '201':
-          description: Comunidad creada exitosamente.
+        '200': 
+          description: Datos de comunidad encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/communityResp'
+        '500':
+          description: Error al buscar comunidad
+components:
+  schemas:
+    user:
+      type: object
+      properties:
+        username:
+          type: string
+          example: Lemursaurio
+        nombre:
+          type: string
+          example: Gabriel
+        apellidos:
+          type: string
+          example: Garro Preciado
+        email:
+          type: string
+          example: cesar.garro1@unsmm.edu.pe
+        password:
+          type: string
+          example: 12345
+        direccion:
+          type: string
+          example: Pro
+        institucion_educativa:
+          type: string
+          example: UNMSM
+        carrera:
+          type: string
+          example: Ing. Sistemas
+        telefono:
+          type: string
+          example: 123456789
+        genero:
+          type: string
+          example: Hombre
+        fecha_nacimiento:
+          type: string
+          format: date
+          example: 13/03/2002
+    userResp:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 675afe8c07ac0b5f24f40a97
+        username:
+          type: string
+          example: Lemursaurio
+        nombre:
+          type: string
+          example: Gabriel
+        apellidos:
+          type: string
+          example: Garro Preciado
+        email:
+          type: string
+          example: cesar.garro1@unsmm.edu.pe
+        password:
+          type: string
+          example: $2b$10$T.Xt1p1GV0BdUqIE4TTnFuzRlUCrRAGBMG/oa6DOK7QuWPZAMOkqC
+        direccion:
+          type: string
+          example: Pro
+        institucion_educativa:
+          type: string
+          example: UNMSM
+        carrera:
+          type: string
+          example: Ing. Sistemas
+        telefono:
+          type: string
+          example: 123456789
+        genero:
+          type: string
+          example: Hombre
+        fecha_nacimiento:
+          type: string
+          format: date
+          example: 2002-03-03T05:00:00.000Z
+        __v:
+          type: integer
+          example: 0
+    listUserResp:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+            example: 675afe8c07ac0b5f24f40a97
+          username:
+            type: string
+            example: Lemursaurio
+          nombre:
+            type: string
+            example: Gabriel
+          apellidos:
+            type: string
+            example: Garro Preciado
+          email:
+            type: string
+            example: cesar.garro2@unmsm.edu.pe
+          direccion:
+            type: string
+            example: Pro
+          institucion_educativa:
+            type: string
+            example: UNMSM
+          carrera:
+            type: string
+            example: Ing. Sistemas
+          telefono:
+            type: string
+            example: "1234567"
+          genero:
+            type: string
+            example: Hombre
+          fecha_nacimiento:
+            type: string
+            format: date-time
+            example: "2002-03-03T05:00:00.000Z"
+          __v:
+            type: integer
+            example: 0
+    community:
+      type: object
+      properties:
+        nombre:
+          type: string
+          example: Comunidad 001
+        descripcion:
+          type: string
+          example: Esta es una descripción para la comunidad
+        image_url:
+          type: string
+          example: https://vanacco.com/wp-content/uploads/2022/05/Comunidad-online-1-300x300.jpg
+        is_personal: 
+          type: boolean
+          example: true
+        is_public:
+          type: boolean
+          example: true
+        curso:
+          type: string
+          example: Informática
+        facultad:
+          type: string
+          example: FISI
+    communityResp:
+      type: object
+      properties:
+        __id:
+          type: string
+          example: 675b40cbda28e1005cbc3435
+        nombre:
+          type: string
+          example: Comunidad 001
+        descripcion:
+          type: string
+          example: Esta es una descripción para la comunidad
+        image_url:
+          type: string
+          example: https://vanacco.com/wp-content/uploads/2022/05/Comunidad-online-1-300x300.jpg
+        is_personal: 
+          type: boolean
+          example: true
+        is_public:
+          type: boolean
+          example: true
+        curso:
+          type: string
+          example: Informática
+        facultad:
+          type: string
+          example: FISI
+        miembros:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                example: 675aed404a8705237c5552fd
+              usuarioId: 
+                type: string
+                example: 673e25672202b70a5cc97280
+              rol:
+                type: string
+                example: Administrador
+        __v:
+          type: integer
+          example: 0
+    listCommunityResp:
+      type: array
+      items: 
+        type: object
+        properties:
+          __id:
+            type: string
+            example: 675b40cbda28e1005cbc3435
+          nombre:
+            type: string
+            example: Comunidad 001
+          descripcion:
+            type: string
+            example: Esta es una descripción para la comunidad
+          image_url:
+            type: string
+            example: https://vanacco.com/wp-content/uploads/2022/05/Comunidad-online-1-300x300.jpg
+          is_personal: 
+            type: boolean
+            example: true
+          is_public:
+            type: boolean
+            example: true
+          curso:
+            type: string
+            example: Informática
+          facultad:
+            type: string
+            example: FISI
+          miembros:
+            type: array
+            items:
+              type: object
+              properties:
+                _id:
+                  type: string
+                  example: 675aed404a8705237c5552fd
+                usuarioId: 
+                  type: string
+                  example: 673e25672202b70a5cc97280
+                rol:
+                  type: string
+                  example: Administrador
+          __v:
+            type: integer
+            example: 0

@@ -16,7 +16,7 @@ exports.getCommunityById = async (req, res) => {
 
         const community = await Community.findById(id)
         if(!community){
-            res.status(404).json({ message: 'Comunidad no encontrado'})
+            return res.status(404).json({ message: 'Comunidad no encontrada'})
         }
         res.status(200).json(community)
     } catch (error) {
