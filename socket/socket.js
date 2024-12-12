@@ -1,4 +1,5 @@
 const socketIo = require('socket.io');
+const jwt = require('jsonwebtoken')
 const Message = require('../models/message')
 
 module.exports = (server) => {
@@ -8,10 +9,13 @@ module.exports = (server) => {
         console.log('Un cliente se ha conectado:', socket.id)
 
         socket.on('message', async (data) => {
+
+            const decoded = jwt.verify(data.token, process.env.SECRET_KEY)
+            
             console.log('Mensaje recibido:', data)
             const dataMessage = {
-                canalId: "6758bb6044ab02804ce88bbf",
-                user: "Gabriel Garro",
+                canalId: data.canalId,
+                user: decoded.username,
                 message: data.message
             }
             const newMessage = new Message(dataMessage)
