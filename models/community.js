@@ -19,10 +19,9 @@ const communitySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    type:{
-        type: String,
+    is_personal:{
+        type: Boolean,
         required: true,
-        enum: ['personal', 'institucional']
     },
     is_public:{
         type: Boolean,
