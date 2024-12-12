@@ -2,11 +2,11 @@ const Message = require('../models/message')
 
 exports.createMessage = async (req, res) => {
     try {
-        const {comunidad_id, canal_id} = req.params
+        const {canal_id} = req.params
         const username = req.username // De las cookies
         const {message} = req.body
         
-        const newMessage = await Message.create({communityId: comunidad_id, channelId: comunidad_id, roomId: canal_id, user: username, message: message}) 
+        const newMessage = await Message.create({user: username, message: message, canalId: canal_id}) 
 
         res.status(201).json(newMessage)
     } catch (error) {
@@ -16,15 +16,14 @@ exports.createMessage = async (req, res) => {
 
 exports.searchMessage = async (req, res) => {
     try {
-        const {comunidad_id, canal_id} = req.params
+        const {canal_id} = req.params
         const {search} = req.body
 
         const filter = {}
 
         const search_regex = new RegExp(`${search}`, 'i')
 
-        filter.communityId = comunidad_id
-        filter.roomId = canal_id
+        filter.canalId = canal_id
         filter.message = search_regex
 
         const messages = await Message.find(filter)
@@ -41,12 +40,11 @@ exports.searchMessage = async (req, res) => {
 
 exports.searchMessageV2 = async (req, res) => {
     try {
-        const {comunidad_id, canal_id} = req.params
+        const {canal_id} = req.params
 
         const filter = {}
 
-        filter.communityId = comunidad_id
-        filter.roomId = canal_id
+        filter.canalId = canal_id
 
         const messages = await Message.find(filter)
 

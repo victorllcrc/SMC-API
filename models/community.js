@@ -34,24 +34,7 @@ const communitySchema = new mongoose.Schema({
     facultad:{
         type:String,
         required: false
-    },
-    canales: [
-        {
-            _id: { 
-                type: mongoose.Schema.Types.ObjectId, 
-                default: () => new mongoose.Types.ObjectId()  
-            },
-            nombre: {
-                type: String,
-                required: true
-            },
-            type: {
-                type: String,
-                required: true,
-                enum: ['texto', 'voz']
-            } 
-        }
-    ]
+    }
 })
 
 const Community = mongoose.model('Community', communitySchema)

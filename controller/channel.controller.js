@@ -1,15 +1,15 @@
-const Community = require('../models/community')
+const Channel = require('../models/channel')
 
 exports.getAllChannels = async (req, res) => {
     try {
         // const community_id = req.community_id
-        const {community_id} = req.params
+        const {comunidad_id} = req.params
 
-        const community = await Community.findOne(community_id)
+        const channels = await Channel.find({comunidadId: comunidad_id})
 
-        if (!community) return res.status(400).json({message: 'Comunidad no existe'})
+        if (!channels) return res.status(400).json({message: 'No se encontraron canales'})
 
-        res.status(200).json(community.canales)
+        res.status(200).json(channels)
     } catch(error) {
         res.status(500).json({message: 'Error al realizar búsqueda', error})
     }
@@ -17,19 +17,19 @@ exports.getAllChannels = async (req, res) => {
 
 exports.createChannel = async (req, res) => {
     try {
-        const {community_id} = req.params
+        const {comunidad_id} = req.params
         const {nombre, type} = req.body
 
-        const community = await Community.findOne(community_id)
+        const newChannel = { 
+            nombre: nombre,
+            type: type,
+            comunidadId: comunidad_id
+        }
 
-        if (!community) return res.status(400).json({message: 'La comunidad no existe'})
+        const channel = new Channel(newChannel)
+        const savedChannel = await channel.save()
 
-        const newChannel = { nombre, type }
-        community.canales.push(newChannel)
-
-        await community.save()
-
-        res.status(201).json(community.canales)
+        res.status(201).json(savedChannel)
     } catch (error) {
         res.status(500).json({message: 'Error al agregar el canal', error})
     }

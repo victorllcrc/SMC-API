@@ -1,15 +1,6 @@
 const mongoose = require('mongoose')
 
-const messageSchema = new mongoose.Schema({
-    communityId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Community",
-        required: true
-    },
-    roomId: { 
-        type: mongoose.Schema.Types.ObjectId,  
-        required: true 
-    },
+const messageSchema = new mongoose.Schema({  
     user: { 
         type: String, 
         required: true 
@@ -21,6 +12,11 @@ const messageSchema = new mongoose.Schema({
     timestamp: { 
         type: Date, 
         default: Date.now 
+    },
+    canalId: { 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Channel',  
+        required: true 
     }
 })
 

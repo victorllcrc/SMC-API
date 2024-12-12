@@ -30,8 +30,8 @@ route.get('/api/v1/channels/:comunidad_id', verifyToken, channelController.getAl
 route.post('/api/v1/channel/:comunidad_id', verifyToken, channelController.createChannel)
 
 //MENSAJES
-route.get('/api/v1/messages/:comunidad_id/:canal_id', verifyToken, messageController.searchMessage)
-route.get('/api/v2/messages/:comunidad_id/:canal_id', messageController.searchMessageV2)
-route.post('/api/v1/message/:comunidad_id/:canal_id', verifyToken, messageController.createMessage)
+route.get('/api/v1/messages/:canal_id', verifyToken, messageController.searchMessage)
+route.get('/api/v2/messages/:canal_id', messageController.searchMessageV2)
+route.post('/api/v1/message/:canal_id', verifyToken, messageController.createMessage)
 
 module.exports = route

@@ -1,6 +1,6 @@
 const Community = require('../models/community')
 
-exports.getAllCommunities = async (req, res) =>{
+exports.getAllCommunities = async (req, res) => {
     try {
         const communities = await Community.find()
         res.status(200).json(communities)
@@ -49,8 +49,8 @@ exports.createCommunity = async (req, res)=>{
 
 exports.searchCommunity = async (req, res) => {
     try {
-        const nombre  = req.query.nombre
-        const is_public  = req.query.is_public
+        const nombre  = req.body.nombre
+        const is_public  = req.body.is_public
 
         const filter = {}
         
@@ -59,14 +59,14 @@ exports.searchCommunity = async (req, res) => {
             
             //filter.nombre = nombre
             filter.nombre = regex
-            console.log(regex)
+            // console.log(regex)
         }
 
         if(is_public){
             filter.is_public = is_public
-            console.log(is_public)
+            // console.log(is_public)
         }
-        console.log(filter)
+        // console.log(filter)
 
         const communities = await Community.find(filter)
         res.status(200).json(communities)
