@@ -3,7 +3,7 @@ info:
   title: SCM Backend API
   version: 1.0.0
 servers:
-  - url: http://localhost:3030/api/v1
+  - url: https://smc-app-grengnejapg5ekdp.eastus-01.azurewebsites.net/api/v1
 tags:
   - name: Users
     description: Endpoints relacionados al manejo de usuarios
@@ -153,6 +153,33 @@ paths:
                   token:
                     type: string
                     example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3M2UyNTY3MjIwMmI3MGE1Y2M5NzI4MCIsIm5hbWUiOiJWaWN0b3IgTExhbmNhcmkgQ2FycmFzY28iLCJ1c2VybmFtZSI6InZpY3RvcmxsY3JjIiwiZW1haWwiOiJ2aWN0b3IubGxhbmNhcmlAdW5tc20uZWR1LnBlIiwiaWF0IjoxNzMzOTg2MzAzLCJleHAiOjE3MzQwNzI3MDN9.dnWjKe-TUTy6Fp4uQtlxSAAzmPsVC-v3MQQsGgDO7tw
+  /singup/exist_correo:
+    post:
+      tags:
+        - Authentication
+      summary: Verificar si el correo ingresado existe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: victor.llancari@unmsm.edu.pe
+      responses:
+        '200':
+          description: Booleano (true = Correo existe, false = No existe)
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: boolean
+                    example: true
+        '500':
+          description: Error al verificar existencia de correo
   /communities:
     get:
       tags:
@@ -247,6 +274,128 @@ paths:
                 $ref: '#/components/schemas/communityResp'
         '500':
           description: Error al buscar comunidad
+  /channels/{comunidad_id}:
+    get:
+      tags:
+        - Channels
+      summary: Listar canales de una comunidad
+      parameters:
+        - name: comunidad_id
+          description: ID de la comunidad de donde queremos listar los canales
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de canales dentro de la comunidad
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listChannelResp'
+        '404':
+          description: No se encontraron canales
+        '500':
+          description: Error al buscar canales en la comunidad
+  /create_channel/{comunidad_id}:
+    post:
+      tags:
+        - Channels
+      summary: Crear canal
+      parameters:
+      - name: comunidad_id
+        description: ID de la comunidad donde queremos crear el canal
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: Nuevo canal
+                is_texto:
+                  type: boolean
+                  example: true
+      responses:
+        '201': 
+          description: Canal creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/channelResp'
+        '500':
+          description: Error al crear canal
+  /messages/{canal_id}:
+    post:
+      tags:
+        - Messages
+      summary: Buscar mensajes dentro de un canal
+      parameters:
+        - name: canal_id
+          description: ID del canal en donde queremos buscar los mensajes
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                search: 
+                  type: string
+                  example: Hola mundo
+      responses:
+        '200':
+          description: Lista de mensajes que coinciden con la búsqueda dentro de un canal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listMessageResp'
+        '404':
+          description: No se encontraron mensajes que coincidan con la búsqueda
+        '500':
+          description: Error al buscar mensajes en el canal
+  /create_message/{canal_id}:
+    post:
+      tags:
+        - Messages
+      summary: Crear mensaje
+      parameters:
+      - name: canal_id
+        description: ID del canal donde queremos crear el mensaje
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: 
+                  type: string
+                  example: Hola mundo
+      responses:
+        '201': 
+          description: Mensaje creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/messageResp'
+        '500':
+          description: Error al crear mensaje
+  
 components:
   schemas:
     user:
@@ -485,3 +634,91 @@ components:
           __v:
             type: integer
             example: 0
+    channelResp:
+      type: object
+      properties:
+        __id:
+          type: string
+          example: 675b61c06b36cb05d4521c39
+        nombre: 
+          type: string
+          example: Nuevo canal
+        is_texto:
+          type: boolean
+          example: true
+        comunidadId:
+          type: string
+          example: 6758bb4244ab02804ce88bbb
+        __v:
+          type: integer
+          example: 0
+    listChannelResp:
+      type: array
+      items:
+        type: object
+        properties:
+          __id:
+            type: string
+            example: 675b61c06b36cb05d4521c39
+          nombre: 
+            type: string
+            example: Nuevo canal
+          is_texto:
+            type: boolean
+            example: true
+          comunidadId:
+            type: string
+            example: 6758bb4244ab02804ce88bbb
+          __v:
+            type: integer
+            example: 0
+    messageResp:
+      type: object
+      properties:
+        __id:
+          type: string
+          example: 675ac33f95aa2d36c83898d9
+        user:
+          type: string
+          example: victorllcrc
+        message:
+          type: string
+          example: Hola mundo
+        canalId:
+          type: string
+          example: 6758bb4244ab02804ce88bbb
+        timestamp: 
+          type: string
+          format: date-time
+          example: 2024-12-12T11:04:31.420Z
+        __v:
+          type: integer
+          example: 0
+    listMessageResp:
+      type: array
+      items:
+        type: object
+        properties:
+          __id:
+            type: string
+            example: 675ac33f95aa2d36c83898d9
+          user:
+            type: string
+            example: victorllcrc
+          message:
+            type: string
+            example: Hola mundo
+          canalId:
+            type: string
+            example: 6758bb4244ab02804ce88bbb
+          timestamp: 
+            type: string
+            format: date-time
+            example: 2024-12-12T11:04:31.420Z
+          __v:
+            type: integer
+            example: 0
+            
+      
+
+      

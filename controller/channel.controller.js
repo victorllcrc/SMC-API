@@ -7,7 +7,7 @@ exports.getAllChannels = async (req, res) => {
 
         const channels = await Channel.find({comunidadId: comunidad_id})
 
-        if (!channels) return res.status(400).json({message: 'No se encontraron canales'})
+        if (!channels) return res.status(404).json({message: 'No se encontraron canales'})
 
         res.status(200).json(channels)
     } catch(error) {

@@ -10,7 +10,7 @@ const options = {
             servers: [
                 {
                     url: 'https://smc-app-grengnejapg5ekdp.eastus-01.azurewebsites.net',
-                    description: 'Local server'
+                    description: 'Deploy server'
                 }
             ]
         }
