@@ -16,8 +16,8 @@ module.exports = (server) => {
                 message: data.message
             }
             const newMessage = new Message(dataMessage)
-            await newMessage.save()
-            io.emit('message', data)
+            const savedMessage = await newMessage.save()
+            io.emit('message', savedMessage)
         })
     })
 
