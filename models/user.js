@@ -46,10 +46,6 @@ const userSchema = new mongoose.Schema({
     fecha_nacimiento: {
         type: Date,
         required: true
-    },
-    rol: {
-        type: String,
-        required: true
     }
 })
 
