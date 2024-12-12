@@ -10,8 +10,7 @@ module.exports = (server) => {
         socket.on('message', async (data) => {
             console.log('Mensaje recibido:', data)
             const dataMessage = {
-                communityId: "674b5a25285b053e3cb60e39",
-                roomId: "6758bb6044ab02804ce88bbf",
+                canalId: "6758bb6044ab02804ce88bbf",
                 user: "Gabriel Garro",
                 message: data.message
             }

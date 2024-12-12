@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: SCM Backend API
+  version: 1.0.0
+servers:
+  - url: http://localhost:3030/api/v1
+tags:
+  - name: Users
+    description: Endpoints relacionados al manejo de usuarios
+  - name: Communities
+    description: Endpoints relacionados al manejo de comunidades
+  - name: Channels
+    description: Endpoints relacionados al manejo de canales dentro de la comunidad
+  - name: Messages
+    description: Endpoints relacionados al manejo de mensajes de texto dentro de los canales de comunidad
+
+paths:
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Crear usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                nombre:
+                  type: string
+                apellidos:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                direccion:
+                  type: string
+                institucion_educativa:
+                  type: string
+                carrera:
+                  type: string
+                telefono:
+                  type: string
+                genero:
+                  type: string
+                fecha_nacimiento:
+                  type: string
+                  format: date
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+        '500':
+          description: Error
+    get:
+      summary: Obtener todos los usuarios
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /user/{id}:
+    get:
+      summary: Obtener usuario por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Datos del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+    put:
+      summary: Actualizar usuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                nombre:
+                  type: string
+                apellidos:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                direccion:
+                  type: string
+                institucion_educativa:
+                  type: string
+                carrera:
+                  type: string
+                telefono:
+                  type: string
+                genero:
+                  type: string
+                fecha_nacimiento:
+                  type: string
+                  format: date
+                rol:
+                  type: string
+      responses:
+        '200':
+          description: Usuario actualizado exitosamente.
+  /singin:
+    post:
+      summary: Iniciar sesión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Inicio de sesión exitoso.
+  /communities:
+    get:
+      summary: Obtener todas las comunidades
+      responses:
+        '200':
+          description: Lista de comunidades
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /community:
+    post:
+      summary: Crear comunidad
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                descripcion:
+                  type: string
+                image_url:
+                  type: string
+                is_personal:
+                  type: boolean
+                is_public:
+                  type: boolean
+                curso:
+                  type: string
+                facultad:
+                  type: string
+      responses:
+        '201':
+          description: Comunidad creada exitosamente.

@@ -5,10 +5,9 @@ const channelSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    type: {
-        type: String,
+    is_texto: {
+        type: Boolean,
         required: true,
-        enum: ['voz', 'texto']
     },
     comunidadId: { 
         type: mongoose.Schema.Types.ObjectId, 
