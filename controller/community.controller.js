@@ -51,6 +51,8 @@ exports.searchCommunity = async (req, res) => {
     try {
         const nombre  = req.body.nombre
         const is_public  = req.body.is_public
+        const is_menber = req.body.is_menber
+        const user_id = req.user_id
 
         const filter = {}
         
@@ -66,7 +68,14 @@ exports.searchCommunity = async (req, res) => {
             filter.is_public = is_public
             // console.log(is_public)
         }
-        // console.log(filter)
+        
+        if(is_menber != null){
+            if(is_menber){
+                filter['miembros.usuarioId'] = user_id
+            }else{
+                filter['miembros.usuarioId'] = {$ne: user_id}
+            }
+        }
 
         const communities = await Community.find(filter)
         res.status(200).json(communities)
@@ -83,6 +92,33 @@ exports.getCommunitiesbyUserId = async (req, res) => {
         const communities = await Community.find({'miembros.usuarioId': user_id})
 
         res.status(200).json(communities)
+
+    } catch (error) {
+        res.status(500).json({message: 'Error al recuperar comunidades de usuario', error})
+    }
+}
+
+exports.addUser = async (req, res) => {
+    try {
+        // Recuperado de los cookies (usando middleware verifyToken)
+        const user_id = req.user_id
+        const community_id = req.params.id
+
+        const newMember = { usuarioId: user_id, rol: "Miembro" }
+
+        //const community = await Community.findById(id)
+        const community = await Community.findByIdAndUpdate(community_id,
+            {$push: {miembros:newMember}},
+            {
+                new: true,
+                runValidators: true
+            })
+
+        if(!community){
+            return res.status(404).json({ message: 'Comunidad no encontrada'})
+        }
+
+        res.status(200).json(community);
 
     } catch (error) {
         res.status(500).json({message: 'Error al recuperar comunidades de usuario', error})
