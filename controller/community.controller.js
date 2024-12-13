@@ -1,4 +1,5 @@
 const Community = require('../models/community')
+const Channel = require('../models/channel')
 const jwt = require('jsonwebtoken') 
 const decodeToken = require('../utils/decode_token')
 
@@ -40,10 +41,20 @@ exports.getCommunityById = async (req, res) => {
 exports.createCommunity = async (req, res) => {
     try {
         const user_id = req.user_id
-        req.body.miembros = [{usuarioId: user_id, rol: "Administrador"}]            
+        req.body.miembros = [{usuarioId: user_id, rol: "Administrador"}]    
+
         const newCommunity = new Community(req.body)
         const community = await newCommunity.save()
-        res.status(201).json(community)
+
+        // Crear canal de texto por defecto 'General'
+        const newChannel = new Channel({
+            nombre: 'General',
+            is_texto: true,
+            comunidadId: community._id
+        })
+        const channel = await newChannel.save()
+
+        res.status(201).json({community: community, defaultChannel: channel})
     } catch (error) {
         res.status(500).json({message: 'Error al intentar crear comunidad', error})
     }
