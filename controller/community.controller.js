@@ -1,4 +1,5 @@
 const Community = require('../models/community')
+const jwt = require('jsonwebtoken') 
 
 exports.getAllCommunities = async (req, res) => {
     try {
@@ -52,7 +53,9 @@ exports.searchCommunity = async (req, res) => {
         const nombre  = req.body.nombre
         const is_public  = req.body.is_public
         const is_menber = req.body.is_menber
-        const user_id = req.user_id
+        const token = req.body.token
+        const decoded = jwt.verify(token, process.env.SECRET_KEY)
+        const user_id = decoded.id
 
         const filter = {}
         
@@ -70,6 +73,9 @@ exports.searchCommunity = async (req, res) => {
         }
         
         if(is_menber != null){
+            const token = req.body.token
+            const decoded = jwt.verify(token, process.env.SECRET_KEY)
+            const user_id = decoded.id
             if(is_menber){
                 filter['miembros.usuarioId'] = user_id
             }else{
