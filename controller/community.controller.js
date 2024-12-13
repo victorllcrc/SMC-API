@@ -167,7 +167,7 @@ exports.addUser = async (req, res) => {
 
         //const community = await Community.findById(id)
         const community = await Community.findByIdAndUpdate(community_id,
-            {$push: {miembros:newMember}},
+            {$push: {miembros: newMember}},
             {
                 new: true,
                 runValidators: true

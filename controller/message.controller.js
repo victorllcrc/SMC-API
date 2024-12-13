@@ -29,7 +29,7 @@ exports.searchMessage = async (req, res) => {
         const messages = await Message.find(filter)
 
         if(!messages){
-            return res.status(404).json({ message: 'No se encontraron mensajes con ese texto'})
+            return res.status(404).json({ message: 'No se encontraron mensajes con ese texto' })
         }
 
         res.status(200).json(messages)

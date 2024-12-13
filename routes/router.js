@@ -6,6 +6,7 @@ const authController = require('../controller/auth.controller')
 const communityController = require('../controller/community.controller')
 const channelController = require('../controller/channel.controller')
 const messageController = require('../controller/message.controller')
+const pollController = require('../controller/poll.controller')
 
 // USERS
 route.post('/api/v1/users', userController.createUser)
@@ -37,5 +38,11 @@ route.post('/api/v1/create_channel/:comunidad_id', channelController.createChann
 route.get('/api/v1/messages/:canal_id', messageController.searchMessage)
 route.get('/api/v2/messages/:canal_id', messageController.searchMessageV2)
 route.post('/api/v1/create_message/:canal_id', messageController.createMessage)
+
+//POLLS
+route.get('/api/v1/polls/:comunidad_id', pollController.getAllPolls)
+route.post('/api/v1/poll/:id/create_poll/:user_id', pollController.createPoll)
+route.post('/api/v1/poll/:poll_id/vote', pollController.voteOption)
+route.put('/api/v1/poll/:id', pollController.updatePoll)
 
 module.exports = route
