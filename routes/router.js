@@ -20,20 +20,20 @@ route.post('/api/v1/singup/exist_correo', authController.existCorreo)
 //COMMUNITY
 route.get('/api/v1/communities', communityController.getAllCommunities)
 route.get('/api/v1/community/:id', communityController.getCommunityById)
-route.post('/api/v1/community', verifyToken, communityController.createCommunity)
-route.post('/api/v1/communities/search', verifyToken, communityController.searchCommunity)
-route.get('/api/v1/community/:id/add_user', verifyToken, communityController.addUser)
+route.post('/api/v1/community', communityController.createCommunity)
+route.post('/api/v1/communities/search', communityController.searchCommunity)
+route.get('/api/v1/community/:id/add_user', communityController.addUser)
 
 
-route.get('/api/v1/communities/myCommunities', verifyToken, communityController.getCommunitiesbyUserId)
+route.get('/api/v1/communities/myCommunities', communityController.getCommunitiesbyUserId)
 
 //CHANNELS
-route.get('/api/v1/channels/:comunidad_id', verifyToken, channelController.getAllChannels)
-route.post('/api/v1/create_channel/:comunidad_id', verifyToken, channelController.createChannel)
+route.get('/api/v1/channels/:comunidad_id', channelController.getAllChannels)
+route.post('/api/v1/create_channel/:comunidad_id', channelController.createChannel)
 
 //MENSAJES
-route.get('/api/v1/messages/:canal_id', verifyToken, messageController.searchMessage)
+route.get('/api/v1/messages/:canal_id', messageController.searchMessage)
 route.get('/api/v2/messages/:canal_id', messageController.searchMessageV2)
-route.post('/api/v1/create_message/:canal_id', verifyToken, messageController.createMessage)
+route.post('/api/v1/create_message/:canal_id', messageController.createMessage)
 
 module.exports = route
