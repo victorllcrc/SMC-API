@@ -1,5 +1,6 @@
 const Community = require('../models/community')
 const jwt = require('jsonwebtoken') 
+const decodeToken = require('../utils/decode_token')
 
 exports.getAllCommunities = async (req, res) => {
     try {
@@ -107,7 +108,8 @@ exports.getCommunitiesbyUserId = async (req, res) => {
 exports.addUser = async (req, res) => {
     try {
         // Recuperado de los cookies (usando middleware verifyToken)
-        const user_id = req.user_id
+        const token = req.params.user_id
+        const user_id = decodeToken(token)
         const community_id = req.params.id
 
         const newMember = { usuarioId: user_id, rol: "Miembro" }

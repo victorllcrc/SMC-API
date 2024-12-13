@@ -22,7 +22,7 @@ route.get('/api/v1/communities', communityController.getAllCommunities)
 route.get('/api/v1/community/:id', communityController.getCommunityById)
 route.post('/api/v1/community', communityController.createCommunity)
 route.post('/api/v1/communities/search', communityController.searchCommunity)
-route.get('/api/v1/community/:id/add_user', communityController.addUser)
+route.get('/api/v1/community/:id/add_user/:user_id', communityController.addUser)
 
 
 route.get('/api/v1/communities/myCommunities', communityController.getCommunitiesbyUserId)
