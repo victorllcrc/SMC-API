@@ -10,7 +10,10 @@ const socketIo = require('./socket/socket')
 const connectDB = require('./database/connection')
 
 const app = express()
-app.use(cors())
+app.use(cors({
+    origin: '*', 
+    credentials: true, 
+  }));
 app.use(express.json());
 dotenv.config()
 connectDB()

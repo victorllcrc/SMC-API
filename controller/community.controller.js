@@ -76,7 +76,7 @@ exports.searchCommunity = async (req, res) => {
                 filter['miembros.usuarioId'] = {$ne: user_id}
             }
         }
-
+        console.log(filter)
         const communities = await Community.find(filter)
         res.status(200).json(communities)
     } catch (error) {
