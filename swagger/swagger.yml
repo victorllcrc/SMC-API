@@ -220,8 +220,13 @@ paths:
           description: Comunidad creada exitosamente
           content:
             application/json:
-              schema: 
-                $ref: '#/components/schemas/communityResp'
+              schema:
+                type: object
+                properties:
+                  community:
+                    $ref: '#/components/schemas/communityResp'
+                  defaultChannel:
+                    $ref: '#/components/schemas/channelResp'
         '500':
           description: Error al crear comunidad
   /community/{id}:
@@ -247,6 +252,54 @@ paths:
           description: Comunidad no encontrada
         '500':
           description: Error al obtener comunidad
+          
+    put:
+      tags:
+        - Communities
+      summary: Actualizar comunidad por ID
+      parameters: 
+        - name: id
+          description: ID de la comunidad que se quiere actualizar
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application.json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: Comunidad 001
+                descripcion:
+                  type: string
+                  example: Esta es una descripción para la comunidad
+                image_url:
+                  type: string
+                  example: https://vanacco.com/wp-content/uploads/2022/05/Comunidad-online-1-300x300.jpg
+                is_public:
+                  type: boolean
+                  example: true
+                curso:
+                  type: string
+                  example: Informática
+                facultad:
+                  type: string
+                  example: FISI
+      responses:
+        '201':
+          description: Comunidad actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/communityResp'
+        '404':
+          description: Comunidad no encontrada
+        '500':
+          description: Error al actualizar comunidad
   /communities/search:
     post:
       tags:
@@ -274,6 +327,133 @@ paths:
                 $ref: '#/components/schemas/communityResp'
         '500':
           description: Error al buscar comunidad
+  /community/{id}/add_user/{user_id}:
+    get:
+      tags:
+        - Communities
+      summary: Agregar usuario a comunidad
+      parameters:
+        - name: id
+          description: ID de la comunidad a donde se agregará el usuario
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          description: ID del usuario que se unirá a la comunidad
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Usuario agregado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  __id:
+                    type: string
+                    example: 675b40cbda28e1005cbc3435
+                  nombre:
+                    type: string
+                    example: Comunidad 001
+                  descripcion:
+                    type: string
+                    example: Esta es una descripción para la comunidad
+                  image_url:
+                    type: string
+                    example: https://vanacco.com/wp-content/uploads/2022/05/Comunidad-online-1-300x300.jpg
+                  is_personal: 
+                    type: boolean
+                    example: true
+                  is_public:
+                    type: boolean
+                    example: true
+                  curso:
+                    type: string
+                    example: Informática
+                  facultad:
+                    type: string
+                    example: FISI
+                  miembros:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        usuarioId: 
+                          type: string
+                        rol:
+                          type: string
+                      example:
+                        - _id: 675aed404a8705237c5552fd
+                          usuarioId: 673e25672202b70a5cc97280
+                          rol: Administrador
+                        - _id: 675be9b2a0f673005d91cc99
+                          usuarioId: 675a86771a117a005d3e4aed
+                          rol: Miembro
+                  __v:
+                    type: integer
+                    example: 0
+        '404':
+          description: Comunidad no encontrada
+        '500':
+          description: Error al agregar usuario a comunidad
+  /channels/{id}/delete_user/{user_id}:
+    get:
+        tags:
+          - Communities
+        summary: Eliminar usuario de comunidad
+        parameters:
+          - name: id
+            description: ID de la comunidad de donde se eliminará el usuario
+            in: path
+            required: true
+            schema:
+              type: string
+          - name: user_id
+            description: ID del usuario que se eliminará de la comunidad
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Usuario eliminado de comunidad exitosamente
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/communityResp'
+          '404':
+            description: Comunidad no encontrada
+          '500':
+            description: Error al eliminar usuario de comunidad
+  /delete_community/{id}:
+    get:
+      tags:
+        - Communities
+      summary: Eliminar comunidad
+      parameters:
+        - name: id
+          description: ID de la comunidad de donde se eliminará el usuario
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Comunidad eliminada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/communityResp'
+        '404': 
+          description: Comunidad no encontrada
+        '500':
+          description: Error al eliminar comunidad
   /channels/{comunidad_id}:
     get:
       tags:
@@ -642,7 +822,7 @@ components:
           example: 675b61c06b36cb05d4521c39
         nombre: 
           type: string
-          example: Nuevo canal
+          example: General
         is_texto:
           type: boolean
           example: true
