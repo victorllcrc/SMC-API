@@ -52,7 +52,7 @@ exports.searchCommunity = async (req, res) => {
     try {
         const nombre  = req.body.nombre
         const is_public  = req.body.is_public
-        const is_menber = req.body.is_menber
+        const is_member = req.body.is_member
         const token = req.body.token
         const decoded = jwt.verify(token, process.env.SECRET_KEY)
         const user_id = decoded.id
@@ -72,11 +72,11 @@ exports.searchCommunity = async (req, res) => {
             // console.log(is_public)
         }
         
-        if(is_menber != null){
+        if(is_member != null){
             const token = req.body.token
             const decoded = jwt.verify(token, process.env.SECRET_KEY)
             const user_id = decoded.id
-            if(is_menber){
+            if(is_member){
                 filter['miembros.usuarioId'] = user_id
             }else{
                 filter['miembros.usuarioId'] = {$ne: user_id}
