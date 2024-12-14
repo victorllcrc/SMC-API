@@ -39,7 +39,7 @@ route.post('/api/v1/create_channel/:comunidad_id', channelController.createChann
 //MENSAJES
 route.get('/api/v1/messages/:canal_id', messageController.searchMessage)
 route.get('/api/v2/messages/:canal_id', messageController.searchMessageV2)
-route.post('/api/v1/create_message/:canal_id', messageController.createMessage)
+route.post('/api/v1/:canal_id/create_message/:user_id', messageController.createMessage)
 
 //POLLS
 route.get('/api/v1/polls/:comunidad_id', pollController.getAllPolls)
