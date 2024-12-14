@@ -51,7 +51,8 @@ exports.voteOption = async (req, res) => {
         const opcion = req.body.opcion
         const filter = { _id: poll_id, is_activa: true }
 
-        const poll = await Poll.findOneAndUpdate(filter, 
+        const poll = await Poll.findOneAndUpdate(
+            filter, 
             { $inc: { 'opciones.$[elem].votos': 1 } },
             {
                 new: true,

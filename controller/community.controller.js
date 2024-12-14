@@ -84,10 +84,10 @@ exports.updateCommunity = async (req, res) => {
             delete req.body.is_personal
         }
         
-        const updatedCommunity = await Community.findByIdAndUpdate(community_id, req.body, {
-            new: true,
-            runValidators: true
-        })
+        const updatedCommunity = await Community.findByIdAndUpdate(
+            community_id,
+            req.body, 
+            { new: true, runValidators: true })
 
         if (!updatedCommunity) {
             return res.status(404).json({ message: 'Comunidad no encontrada' })
@@ -166,12 +166,10 @@ exports.addUser = async (req, res) => {
         const newMember = { usuarioId: user_id, rol: "Miembro" }
 
         //const community = await Community.findById(id)
-        const community = await Community.findByIdAndUpdate(community_id,
+        const community = await Community.findByIdAndUpdate(
+            community_id,
             {$push: {miembros: newMember}},
-            {
-                new: true,
-                runValidators: true
-            })
+            { new: true, runValidators: true })
 
         if(!community){
             return res.status(404).json({ message: 'Comunidad no encontrada'})
@@ -190,7 +188,8 @@ exports.deleteUser = async (req, res) => {
         const user_id = decodeToken(token)
         const community_id = req.params.id
 
-        const community = await Community.findByIdAndUpdate(community_id,
+        const community = await Community.findByIdAndUpdate(
+            community_id,
             {$pull: {miembros: {usuarioId: user_id, rol: 'Miembro'}}},
             {new: true, runValidators: true}
         )

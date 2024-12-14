@@ -33,10 +33,6 @@ const pollSchema = mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    fecha_creacion: {
-        type: Date,
-        default: Date.now,
-    },
     is_activa: {
         type: Boolean,
         default: true,

@@ -7,6 +7,7 @@ const communityController = require('../controller/community.controller')
 const channelController = require('../controller/channel.controller')
 const messageController = require('../controller/message.controller')
 const pollController = require('../controller/poll.controller')
+const threadController = require('../controller/thread.controller')
 
 // USERS
 route.post('/api/v1/users', userController.createUser)
@@ -44,5 +45,13 @@ route.get('/api/v1/polls/:comunidad_id', pollController.getAllPolls)
 route.post('/api/v1/poll/:id/create_poll/:user_id', pollController.createPoll)
 route.post('/api/v1/poll/:poll_id/vote', pollController.voteOption)
 route.put('/api/v1/poll/:id', pollController.updatePoll)
+
+//HILOS
+route.post('/api/v1/create_thread/:message_id', threadController.createThread)
+route.get('/api/v1/threads/:canal_id', threadController.getAllThreadsFromChannel)
+route.get('/api/v1/thread/:id', threadController.getThreadById)
+route.put('/api/v1/thread/:id', threadController.updateThread)
+route.get('/api/v1/thread/:thread_id/add_message/:message_id', threadController.addMessage)
+route.delete('/api/v1/delete_thread/:id', threadController.deleteThread)
 
 module.exports = route
