@@ -16,7 +16,8 @@ module.exports = (server) => {
             const dataMessage = {
                 canalId: data.canalId,
                 user: decoded.username,
-                message: data.message
+                message: data.message,
+                type: data.type
             }
             const newMessage = new Message(dataMessage)
             const savedMessage = await newMessage.save()
