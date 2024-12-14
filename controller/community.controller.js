@@ -1,4 +1,5 @@
 const Community = require('../models/community')
+const Channel = require('../models/channel')
 const jwt = require('jsonwebtoken') 
 const decodeToken = require('../utils/decode_token')
 
@@ -37,16 +38,66 @@ exports.getCommunityById = async (req, res) => {
 // }
 
 // Cuando alguien crea una comunidad, automáticamente se le da el rol de ADMINISTRADOR
-exports.createCommunity = async (req, res)=>{
-        try {
-            const user_id = req.user_id
-            req.body.miembros = [{usuarioId: user_id, rol: "Administrador"}]            
-            const newCommunity = new Community(req.body)
-            const community = await newCommunity.save()
-            res.status(201).json(community)
-        } catch (error) {
-            res.status(500).json({message: 'Error al intentar crear comunidad', error})
+exports.createCommunity = async (req, res) => {
+    try {
+        const user_id = req.user_id
+        req.body.miembros = [{usuarioId: user_id, rol: "Administrador"}]    
+
+        const newCommunity = new Community(req.body)
+        const community = await newCommunity.save()
+
+        // Crear canal de texto por defecto 'General'
+        const newChannel = new Channel({
+            nombre: 'General',
+            is_texto: true,
+            comunidadId: community._id
+        })
+        const channel = await newChannel.save()
+
+        res.status(201).json({community: community, defaultChannel: channel})
+    } catch (error) {
+        res.status(500).json({message: 'Error al intentar crear comunidad', error})
+    }
+}
+
+exports.deleteCommunity = async (req, res) => {
+    try {
+        const community_id = req.params.id
+
+        const deletedCommunity = await Community.findByIdAndDelete(community_id)
+
+        if (!deletedCommunity) {
+            return res.status(404).json({ message: 'Comunidad no encontrada' })
         }
+
+        res.status(201).json(deletedCommunity)
+    } catch (error) {
+        res.status(500).json({ message: 'Error al intentar eliminar comunidad', error})
+    }
+}
+
+exports.updateCommunity = async (req, res) => {
+    try {
+        const community_id = req.params.id
+
+        if ('is_personal' in req.body) {
+            delete req.body.is_personal
+        }
+        
+        const updatedCommunity = await Community.findByIdAndUpdate(
+            community_id,
+            req.body, 
+            { new: true, runValidators: true })
+
+        if (!updatedCommunity) {
+            return res.status(404).json({ message: 'Comunidad no encontrada' })
+        }
+
+        res.status(201).json(updatedCommunity)
+
+    } catch (error) {
+        res.status(500). json({ message: 'Error al actualizar comunidad', error})
+    }
 }
 
 exports.searchCommunity = async (req, res) => {
@@ -115,12 +166,10 @@ exports.addUser = async (req, res) => {
         const newMember = { usuarioId: user_id, rol: "Miembro" }
 
         //const community = await Community.findById(id)
-        const community = await Community.findByIdAndUpdate(community_id,
-            {$push: {miembros:newMember}},
-            {
-                new: true,
-                runValidators: true
-            })
+        const community = await Community.findByIdAndUpdate(
+            community_id,
+            {$push: {miembros: newMember}},
+            { new: true, runValidators: true })
 
         if(!community){
             return res.status(404).json({ message: 'Comunidad no encontrada'})
@@ -129,6 +178,29 @@ exports.addUser = async (req, res) => {
         res.status(200).json(community);
 
     } catch (error) {
-        res.status(500).json({message: 'Error al recuperar comunidades de usuario', error})
+        res.status(500).json({message: 'Error al recuperar y actualizar comunidad', error})
+    }
+}
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const token = req.params.user_id
+        const user_id = decodeToken(token)
+        const community_id = req.params.id
+
+        const community = await Community.findByIdAndUpdate(
+            community_id,
+            {$pull: {miembros: {usuarioId: user_id, rol: 'Miembro'}}},
+            {new: true, runValidators: true}
+        )
+
+        if (!community) {
+            return res.status(404).json({message: 'Comunidad no encontrada'})
+        }
+
+        res.status(200).json(community)
+
+    } catch (error) {
+        res.status(500).json({message: 'Error al recuperar y actualizar comunidad', error})
     }
 }
