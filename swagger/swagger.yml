@@ -15,6 +15,10 @@ tags:
     description: Endpoints relacionados al manejo de mensajes de texto dentro de los canales de comunidad
   - name: Authentication
     description: Endpoints relacionados a la validación de datos y generación de tokens
+  - name: Polls
+    description: Endpoints relacionados al manejo de encuestas de una comunidad
+  - name: Threads
+    description: Endpoints realcionados al manejo de hilos de un canal
 
 paths:
   /users:
@@ -575,6 +579,376 @@ paths:
                 $ref: '#/components/schemas/messageResp'
         '500':
           description: Error al crear mensaje
+          
+          
+  /polls/{comunidad_id}:
+    get:
+      tags:
+        - Polls
+      summary: Obtener encuestas de una comunidad
+      description: Devuelve una lista de encuestas de una comunidad específica, con la posibilidad de filtrar por estado
+      parameters:
+        - name: comunidad_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la comunidad
+        - name: is_activa
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Filtrar encuestas por estado (activa/inactiva)
+      responses:
+        200:
+          description: Lista de encuestas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    titulo:
+                      type: string
+                    descripcion:
+                      type: string
+                    opciones:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          texto:
+                            type: string
+                          votos:
+                            type: number
+                    comunidadId:
+                      type: string
+                    creadorId:
+                      type: string
+                    is_activa:
+                      type: boolean
+                    __v:
+                      type: number
+        404:
+          description: No se encontraron encuestas en la comunidad
+        500:
+          description: Error al recuperar encuestas
+          
+  /poll/{id}/create_poll/{user_id}:
+    post:
+      tags:
+        - Polls
+      summary: Crear encuesta
+      description: Crea una nueva encuesta dentro de una comunidad
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la comunidad
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del usuario creador (extraído del token)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                descripcion:
+                  type: string
+                opciones:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      texto:
+                        type: string
+      responses:
+        201:
+          description: Encuesta creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/poll'
+        500:
+          description: Error al crear encuesta
+          
+  /poll/{poll_id}/vote:
+    post:
+      tags:
+        - Polls
+      summary: Votar por una opción
+      description: Incrementa el contador de votos para una opción en una encuesta activa
+      parameters:
+        - name: poll_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la encuesta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                opcion:
+                  type: string
+              required:
+                - opcion
+      responses:
+        200:
+          description: Lista de opciones actualizada
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    texto:
+                      type: string
+                    votos:
+                      type: number
+        404:
+          description: Encuesta no encontrada o no activa
+        500:
+          description: Error al realizar el voto
+  /poll/{id}:
+    put:
+      tags:
+        - Polls
+      summary: Actualizar encuesta
+      description: Actualiza los detalles de una encuesta existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID de la encuesta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                descripcion:
+                  type: string
+                opciones:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      texto:
+                        type: string
+                is_activa:
+                  type: boolean
+      responses:
+        201:
+          description: Encuesta actualizada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/poll'
+        404:
+          description: Encuesta no encontrada
+        500:
+          description: Error al actualizar encuesta
+          
+  /create_thread/{message_id}:
+    post:
+      tags:
+        - Threads
+      summary: Crear un hilo
+      description: Crea un nuevo hilo asociado a un mensaje principal
+      parameters:
+        - name: message_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del mensaje principal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                descripcion:
+                  type: string
+              required:
+                - titulo
+                - descripcion
+      responses:
+        201:
+          description: Hilo creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/thread'
+        404:
+          description: Mensaje principal no encontrado
+        500:
+          description: Error al crear el hilo
+  /threads/{canal_id}:
+    get:
+      tags:
+        - Threads
+      summary: Obtener hilos de un canal
+      description: Devuelve todos los hilos asociados a los mensajes de un canal
+      parameters:
+        - name: canal_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del canal
+      responses:
+        200:
+          description: Lista de hilos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/thread'
+        500:
+          description: Error al obtener los hilos
+  /thread/{id}:
+    get:
+      tags:
+        - Threads
+      summary: Obtener un hilo por ID
+      description: Devuelve los detalles de un hilo, incluyendo su mensaje principal y comentarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del hilo
+      responses:
+        200:
+          description: Detalles del hilo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/threadDetails'
+        404:
+          description: Hilo no encontrado
+        500:
+          description: Error al obtener el hilo
+    put:
+      tags:
+        - Threads
+      summary: Actualizar un hilo
+      description: Permite actualizar el título y la descripción de un hilo
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del hilo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                descripcion:
+                  type: string
+      responses:
+        200:
+          description: Hilo actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/thread'
+        404:
+          description: Hilo no encontrado
+        500:
+          description: Error al actualizar el hilo
+  /thread/{thread_id}/add_message/{message_id}:
+    get:
+      tags:
+        - Threads
+      summary: Agregar un mensaje a un hilo
+      description: Agrega un mensaje como comentario a un hilo existente
+      parameters:
+        - name: thread_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del hilo
+        - name: message_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del mensaje a agregar
+      responses:
+        200:
+          description: Mensaje agregado exitosamente al hilo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/thread'
+        404:
+          description: Hilo o mensaje no encontrado
+        400:
+          description: El comentario y el mensaje principal no pertenecen al mismo canal
+        500:
+          description: Error al agregar el comentario
+  /delete_thread/{id}:
+    delete:
+      tags:
+        - Threads
+      summary: Eliminar un hilo
+      description: Elimina un hilo por su ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID del hilo
+      responses:
+        200:
+          description: Hilo eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/thread'
+        404:
+          description: Hilo no encontrado
+        500:
+          description: Error al eliminar el hilo
+  
   
 components:
   schemas:
@@ -898,6 +1272,60 @@ components:
           __v:
             type: integer
             example: 0
+    poll:
+      type: object
+      properties:
+        _id:
+          type: string
+        titulo:
+          type: string
+        descripcion:
+          type: string
+        opciones:
+          type: array
+          items:
+            type: object
+            properties:
+              texto:
+                type: string
+              votos:
+                type: number
+        comunidadId:
+          type: string
+        creadorId:
+          type: string
+        is_activa:
+          type: boolean
+        __v:
+          type: number
+    thread:
+      type: object
+      properties:
+        _id:
+          type: string
+        titulo:
+          type: string
+        descripcion:
+          type: string
+        mensajePrincipalId:
+          type: string
+        comentarios:
+          type: array
+          items:
+            type: string
+        __v:
+          type: number
+    threadDetails:
+      allOf:
+        - $ref: '#/components/schemas/thread'
+        - type: object
+          properties:
+            mensajePrincipalId:
+              $ref: '#/components/schemas/messageResp'
+            comentarios:
+              type: array
+              items:
+                $ref: '#/components/schemas/messageResp'
             
       
 
