@@ -12,6 +12,7 @@ route.post('/api/v1/users', userController.createUser)
 route.get('/api/v1/users', userController.getAllUsers)
 route.get('/api/v1/user/:id', userController.getUserById)
 route.put('/api/v1/user/:id', userController.updateUser)
+route.put('/api/v1/user/:id/change_pass', userController.changePassUser)
 
 //LOGIN
 route.post('/api/v1/singin', authController.singIn)
